@@ -15,7 +15,7 @@ func main() {
 	//get the root node in the config file
 	config, err := yaml.ReadFile(*file)
 	if err != nil {
-		fmt.Println("BOOM 1! ", err)
+		fmt.Println("Error retrieving root node ", err)
 		return
 	}
 
@@ -38,13 +38,18 @@ func main() {
 
 		fmt.Println("Attempting url: ", url)
 
-		resp, err := http.Get(url)
-		if err != nil {
-			fmt.Println("         Error: ", err)
-			continue
-		}
-
-		fmt.Println("   Status code: ", resp.StatusCode)
-		resp.Body.Close()
+		sendRequest(url)
 	}
+}
+
+func sendRequest(url string) {
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("Url '%s' has error: %s", url, err))
+		return
+	}
+
+	defer resp.Body.Close()
+
+	fmt.Println(fmt.Sprintf("Url '%s' has status code: %s", url, resp.Status))
 }
