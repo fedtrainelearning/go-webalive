@@ -32,7 +32,7 @@ func main() {
 	for x := 0; x < count; x++ {
 		url, err := config.Get(fmt.Sprintf("urls[%d]", x))
 		if err != nil {
-			fmt.Println("BOOM 3! ", err)
+			fmt.Println("   Error getting the url out of the config list: ", err)
 			return
 		}
 
