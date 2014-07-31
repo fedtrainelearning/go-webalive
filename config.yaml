@@ -1,0 +1,5 @@
+urls:
+    - http://smsprodweb1/eapplication
+    - http://smsprodweb1/estudent
+    - http://smsprodweb2/eapplication
+    - http://smsprodweb2/estudent
