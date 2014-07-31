@@ -28,28 +28,37 @@ func main() {
 
 	fmt.Println("Number of urls found in config: ", count)
 
+	//create a channel
+	c := make(chan string)
+
 	//iterate the urls
 	for x := 0; x < count; x++ {
 		url, err := config.Get(fmt.Sprintf("urls[%d]", x))
 		if err != nil {
-			fmt.Println("   Error getting the url out of the config list: ", err)
+			fmt.Println("Error getting the url out of the config list: ", err)
 			return
 		}
 
-		fmt.Println("Attempting url: ", url)
+		fmt.Println("Spawning routine url: ", url)
 
-		sendRequest(url)
+		//send requests concurrently
+		go sendRequest(url, c)
+	}
+
+	//loop until a response is received from all urls
+	for x := 0; x < count; x++ {
+		fmt.Println(<-c)
 	}
 }
 
-func sendRequest(url string) {
+func sendRequest(url string, c chan string) {
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("Url '%s' has error: %s", url, err))
+		c <- fmt.Sprintf("Url '%s' has error: %s", url, err)
 		return
 	}
 
 	defer resp.Body.Close()
 
-	fmt.Println(fmt.Sprintf("Url '%s' has status code: %s", url, resp.Status))
+	c <- fmt.Sprintf("Response received for '%s' has status code: %s", url, resp.Status)
 }
