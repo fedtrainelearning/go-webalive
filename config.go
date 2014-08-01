@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"github.com/kylelemons/go-gypsy/yaml"
@@ -9,32 +8,31 @@ import (
 
 var file = flag.String("file", "config.yaml", "The path to the config file to use")
 
-func getUrls() (urls []string, err error) {
+func getUrls() ([]string, error) {
 	flag.Parse()
 
 	//get the root node in the config file
-	config, error := yaml.ReadFile(*file)
-	if error != nil {
-		err = errors.New(fmt.Sprintf("Error retrieving root node: %s", error))
-		return
+	config, err := yaml.ReadFile(*file)
+	if err != nil {
+		return nil, err
 	}
 
 	//get the count of urls
-	count, error := config.Count("urls")
-	if error != nil {
-		err = errors.New(fmt.Sprintf("Error getting urls from config: %s", error))
-		return
+	count, err := config.Count("urls")
+	if err != nil {
+		return nil, err
 	}
 
+	urls := []string{}
+
 	for x := 0; x < count; x++ {
-		url, error := config.Get(fmt.Sprintf("urls[%d]", x))
-		if error != nil {
-			err = errors.New(fmt.Sprintf("Error retrieving url: %s", error))
-			return
+		url, err := config.Get(fmt.Sprintf("urls[%d]", x))
+		if err != nil {
+			return nil, err
 		}
 
 		urls = append(urls, url)
 	}
 
-	return
+	return urls, nil
 }
