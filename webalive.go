@@ -1,16 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net/http"
 )
 
-var file = flag.String("file", "config.yaml", "The path to the config file to use")
-
 func main() {
-	flag.Parse()
-
 	urls, err := getUrls()
 	if err != nil {
 		fmt.Println(err)

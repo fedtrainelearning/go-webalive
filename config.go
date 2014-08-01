@@ -2,11 +2,16 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
 
+var file = flag.String("file", "config.yaml", "The path to the config file to use")
+
 func getUrls() (urls []string, err error) {
+	flag.Parse()
+
 	//get the root node in the config file
 	config, error := yaml.ReadFile(*file)
 	if error != nil {
